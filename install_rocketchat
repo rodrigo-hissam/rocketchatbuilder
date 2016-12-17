@@ -5,35 +5,32 @@
 #
 # Discuss at http://mangolassi.it/topic/8086/installing-rocket-chat-on-centos-7
 
-cat > /etc/yum.repos.d/mongodb-org-3.2.repo <<EOF
-[mongodb-org-3.2]
+cat > /etc/yum.repos.d/mongodb.repo <<EOF
+[mongodb]
 name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/redhat/7Server/mongodb-org/stable/x86_64/
+baseurl=http://downloads-distro.mongodb.org/repo/redhat/os/x86_64
 gpgcheck=0
 enabled=1
 EOF
 
 yum install -y epel-release firewalld
-yum install -y mongodb-org policycoreutils-python-2.2.5-20.el7.x86_64 nodejs
+yum install -y nodejs curl GraphicsMagick npm mongodb-org-server mongodb-org policycoreutils-python
 semanage port -a -t mongod_port_t -p tcp 27017
 systemctl start mongod
 systemctl enable mongod
 firewall-cmd --zone=public --add-port=80/tcp --permanent
 firewall-cmd --reload
-yum -y install GraphicsMagick
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
-source ~/.bash_profile
-nvm install v0.10.40
+npm install -g inherits n
+n 4.5
 cd /opt
 curl -L https://rocket.chat/releases/latest/download -o rocket.chat.tgz
 tar zxvf rocket.chat.tgz
 mv bundle Rocket.Chat
 cd Rocket.Chat/programs/server
-npm install inherits
 npm install
 cd ../..
 npm install forever
-echo "export ROOT_URL=http://rocket.lab.ntg.co/" >> ~/.bashrc
+echo "export ROOT_URL=http://rocket/" >> ~/.bashrc
 echo "export MONGO_URL=mongodb://localhost:27017/rocketchat" >> ~/.bashrc
 echo "export PORT=80" >> ~/.bashrc
 source ~/.bashrc
