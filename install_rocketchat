@@ -14,7 +14,7 @@ enabled=1
 EOF
 
 yum install -y epel-release firewalld
-yum install -y nodejs curl GraphicsMagick npm mongodb-org-server mongodb-org policycoreutils-python
+yum install -y nodejs curl GraphicsMagick npm mongodb-org-server mongodb-org policycoreutils-python gcc-c++
 semanage port -a -t mongod_port_t -p tcp 27017
 systemctl start mongod
 systemctl enable mongod
