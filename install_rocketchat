@@ -29,9 +29,22 @@ mv bundle Rocket.Chat
 cd Rocket.Chat/programs/server
 npm install
 cd ../..
-npm install forever
 echo "export ROOT_URL=http://rocket/" >> ~/.bashrc
 echo "export MONGO_URL=mongodb://localhost:27017/rocketchat" >> ~/.bashrc
 echo "export PORT=80" >> ~/.bashrc
 source ~/.bashrc
-/opt/Rocket.Chat/node_modules/forever/bin/forever start /opt/Rocket.Chat/main.js
+
+cat > /usr/lib/systemd/system/rocketchat.service <<EOF
+[Unit]
+Description=The Rocket.Chat server
+After=network.target remote-fs.target nss-lookup.target nginx.target mongod.target
+[Service]
+ExecStart=/usr/local/bin/node /opt/Rocket.Chat/main.js
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=rocketchat
+User=root
+Environment=MONGO_URL=mongodb://localhost:27017/rocketchat ROOT_URL=http://rocket/ PORT=80
+[Install]
+WantedBy=multi-user.target
+EOF
