@@ -48,3 +48,6 @@ Environment=MONGO_URL=mongodb://localhost:27017/rocketchat ROOT_URL=http://rocke
 [Install]
 WantedBy=multi-user.target
 EOF
+
+systemctl enable rocketchat.service
+systemctl start rocketchat.service
